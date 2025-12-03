@@ -13,21 +13,62 @@ class App {
 }
 
 fun main(args: Array<String>) {
-    val solution: String = when {
-        args.size == 2 && args[0] == "part1" && args[1] == "test" -> solvePart1("../../inputTest.txt")
-        args.size == 2 && args[0] == "part1" && args[1] == "run" -> solvePart1("../../input1.txt")
-        args.size == 2 && args[0] == "part2" && args[1] == "test" -> solvePart2("../../inputTest.txt")
-        args.size == 2 && args[0] == "part2" && args[1] == "run" -> solvePart2("../../input1.txt")
-        else -> errorWithManual(args)
+    val solution: String = if (args.size == 2) {
+        when {
+            args[0] == "part1" && args[1] == "test" -> solvePart1("../../inputTest.txt")
+            args[0] == "part1" && args[1] == "run" -> solvePart1("../../input1.txt")
+            args[0] == "part2" && args[1] == "test" -> solvePart2("../../inputTest.txt")
+            args[0] == "part2" && args[1] == "run" -> solvePart2("../../input1.txt")
+            else -> errorWithManual(args)
+        }
+    } else {
+        errorWithManual(args)
     }
+
 
     println(solution)
 }
 
 fun solvePart1(inputFile: String): String {
     val file = File(inputFile)
+
+    val startPoint = Pair(50, 0)
     return file.readText()
+        .trim()
+        .split('\n')
+        .fold(startPoint) {position, instruction -> calculateTurn(position, instruction)}
+        .toString()
 }
+
+fun calculateTurn(current: Pair<Int, Int>, instruction: String): Pair<Int, Int> {
+//    print("Current Position: ${current.first} ${current.second}\t")
+
+    val sign = if (instruction.startsWith('L')) {
+        -1
+    } else {
+        1
+    }
+    val number = instruction.substring(1).toInt()
+    val result = current.first + (sign * number)
+
+//    println("Position Change: $result")
+
+    val newPosition =  mapResultToDialRange(result)
+
+    return if (newPosition == 0) {
+        Pair(0, current.second + 1)
+    } else {
+        Pair(newPosition, current.second)
+    }
+}
+
+fun mapResultToDialRange(result: Int): Int =
+    when {
+        result < 0 -> mapResultToDialRange(result + 100)
+        result > 99 -> result % 100
+        else -> result
+    }
+
 
 fun solvePart2(inputFile: String): String {
     throw NotImplementedError()
