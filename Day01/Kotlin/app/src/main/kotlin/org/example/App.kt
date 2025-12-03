@@ -41,13 +41,12 @@ fun solvePart1(inputFile: String): String {
 }
 
 fun calculateTurn(current: Pair<Int, Int>, instruction: String): Pair<Int, Int> {
-    val sign = if (instruction.startsWith('L')) {
-        -1
-    } else {
-        1
-    }
     val number = instruction.substring(1).toInt()
-    val result = current.first + (sign * number)
+    val result = if (instruction.startsWith('L')) {
+        current.first - number
+    } else {
+        current.first + number
+    }
 
     val newPosition = mapResultToDialRange(result)
 
