@@ -36,13 +36,11 @@ fun solvePart1(inputFile: String): String {
     return file.readText()
         .trim()
         .split('\n')
-        .fold(startPoint) {position, instruction -> calculateTurn(position, instruction)}
+        .fold(startPoint) { position, instruction -> calculateTurn(position, instruction) }
         .toString()
 }
 
 fun calculateTurn(current: Pair<Int, Int>, instruction: String): Pair<Int, Int> {
-//    print("Current Position: ${current.first} ${current.second}\t")
-
     val sign = if (instruction.startsWith('L')) {
         -1
     } else {
@@ -51,9 +49,7 @@ fun calculateTurn(current: Pair<Int, Int>, instruction: String): Pair<Int, Int> 
     val number = instruction.substring(1).toInt()
     val result = current.first + (sign * number)
 
-//    println("Position Change: $result")
-
-    val newPosition =  mapResultToDialRange(result)
+    val newPosition = mapResultToDialRange(result)
 
     return if (newPosition == 0) {
         Pair(0, current.second + 1)
@@ -69,7 +65,6 @@ fun mapResultToDialRange(result: Int): Int =
         else -> result
     }
 
-
 fun solvePart2(inputFile: String): String {
     throw NotImplementedError()
 }
@@ -78,9 +73,9 @@ fun errorWithManual(args: Array<String>): String =
     """
         The following arguments were given: 
     """.trimIndent() + '\n' + '\t' +
-    args.fold("") { acc, curr -> acc + curr } + '\n' +
+            args.fold("") { acc, curr -> acc + curr } + '\n' +
 
-    """
+            """
         The program expects 2 input parameters (part1|part2) (test|run)
         part1: Solution for part1
         part2: Solution for part2
