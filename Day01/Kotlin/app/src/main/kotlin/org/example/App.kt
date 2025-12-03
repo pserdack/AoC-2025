@@ -13,23 +13,36 @@ class App {
 }
 
 fun main(args: Array<String>) {
-    val input = if (args.size == 1) {
-        when(args[0]) {
-            "test" -> readInput("../../inputTest.txt")
-            "run" -> readInput("../../input1.txt")
-            else -> {
-                println("Invalid argument '${args[0]}' will use the test config. (Valid arguments: 'test', 'run')")
-                readInput("../../inputTest.txt")
-            }
-        }
-    } else {
-        readInput("../../input1.txt")
+    val solution: String = when {
+        args.size == 2 && args[0] == "part1" && args[1] == "test" -> solvePart1("../../inputTest.txt")
+        args.size == 2 && args[0] == "part1" && args[1] == "run" -> solvePart1("../../input1.txt")
+        args.size == 2 && args[0] == "part2" && args[1] == "test" -> solvePart2("../../inputTest.txt")
+        args.size == 2 && args[0] == "part2" && args[1] == "run" -> solvePart2("../../input1.txt")
+        else -> errorWithManual(args)
     }
 
-    println("Hello World")
+    println(solution)
 }
 
-fun readInput(inputFile: String): String {
+fun solvePart1(inputFile: String): String {
     val file = File(inputFile)
     return file.readText()
 }
+
+fun solvePart2(inputFile: String): String {
+    throw NotImplementedError()
+}
+
+fun errorWithManual(args: Array<String>): String =
+    """
+        The following arguments were given: 
+    """.trimIndent() + '\n' + '\t' +
+    args.fold("") { acc, curr -> acc + curr } + '\n' +
+
+    """
+        The program expects 2 input parameters (part1|part2) (test|run)
+        part1: Solution for part1
+        part2: Solution for part2
+        test: Small dataset
+        run: Entire dataset
+    """.trimIndent()
