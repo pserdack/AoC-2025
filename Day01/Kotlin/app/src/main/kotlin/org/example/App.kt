@@ -3,6 +3,8 @@
  */
 package org.example
 
+import java.io.File
+
 class App {
     val greeting: String
         get() {
@@ -23,6 +25,8 @@ fun main(args: Array<String>) {
     } else {
         readInput("../../input1.txt")
     }
+
+    println("Hello World")
 }
 
 fun readInput(inputFile: String): String {
