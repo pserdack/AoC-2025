@@ -4,6 +4,7 @@
 package org.example
 
 import java.io.File
+import java.nio.file.Paths
 
 class App {
     val greeting: String
@@ -15,10 +16,12 @@ class App {
 fun main(args: Array<String>) {
     val solution: String = if (args.size == 2) {
         when {
-            args[0] == "part1" && args[1] == "test" -> solvePart1("../../inputTest.txt")
-            args[0] == "part1" && args[1] == "run" -> solvePart1("../../input1.txt")
-            args[0] == "part2" && args[1] == "test" -> solvePart2("../../inputTest.txt")
-            args[0] == "part2" && args[1] == "run" -> solvePart2("../../input1.txt")
+            args[0] == "part1" && args[1] == "test" -> solvePart1("../inputTest.txt")
+            args[0] == "part1" && args[1] == "run" -> solvePart1("../input1.txt")
+            args[0] == "part2" && args[1] == "test" -> solvePart2("../inputTest.txt")
+            args[0] == "part2" && args[1] == "run" -> solvePart2("../input1.txt")
+            args[0] == "cheese" && args[1] == "run" -> solveCheese("../input1.txt")
+            args[0] == "compare" && args[1] == "run" -> compare("../input1.txt")
             else -> errorWithManual(args)
         }
     } else {
@@ -36,11 +39,11 @@ fun solvePart1(inputFile: String): String {
     return file.readText()
         .trim()
         .split('\n')
-        .fold(startPoint) { position, instruction -> calculateTurn(position, instruction) }
+        .fold(startPoint) { position, instruction -> calculateTurnPart1(position, instruction) }
         .toString()
 }
 
-fun calculateTurn(current: Pair<Int, Int>, instruction: String): Pair<Int, Int> {
+fun calculateTurnPart1(current: Pair<Int, Int>, instruction: String): Pair<Int, Int> {
     val number = instruction.substring(1).toInt()
     val result = if (instruction.startsWith('L')) {
         current.first - number
@@ -48,7 +51,7 @@ fun calculateTurn(current: Pair<Int, Int>, instruction: String): Pair<Int, Int> 
         current.first + number
     }
 
-    val newPosition = mapResultToDialRange(result)
+    val newPosition = mapResultToDialRangePart1(result)
 
     return if (newPosition == 0) {
         Pair(0, current.second + 1)
@@ -57,15 +60,159 @@ fun calculateTurn(current: Pair<Int, Int>, instruction: String): Pair<Int, Int> 
     }
 }
 
-fun mapResultToDialRange(result: Int): Int =
+fun mapResultToDialRangePart1(result: Int): Int =
     when {
-        result < 0 -> mapResultToDialRange(result + 100)
+        result < 0 -> mapResultToDialRangePart1(result + 100)
         result > 99 -> result % 100
         else -> result
     }
 
 fun solvePart2(inputFile: String): String {
-    throw NotImplementedError()
+    val file = File(inputFile)
+    val pwd = Paths.get("").toAbsolutePath().toString()
+    println(pwd)
+
+    val startPoint = Pair(50, 0)
+    return file.readText()
+        .trim()
+        .split('\n')
+        .fold(startPoint) { position, instruction -> calculateTurnPart2(position, instruction) }
+        .toString()
+}
+
+fun calculateTurnPart2(current: Pair<Int, Int>, instruction: String): Pair<Int, Int> {
+    val number = instruction.substring(1).toInt()
+    val result = if (instruction.startsWith('L')) {
+        current.first - number
+    } else {
+        current.first + number
+    }
+
+    when {
+        result == 0 -> return Pair(result, current.second + 1)
+        result < 0 && current.first == 0 -> {
+                var zeroHit = -1
+                var tempResult = result
+                while (tempResult < 0) {
+                    tempResult += 100
+                    zeroHit += 1
+                }
+                if (tempResult == 0) ++zeroHit
+                return Pair(tempResult, current.second + zeroHit)
+            }
+
+        result < 0 ->  {
+            var zeroHit = 0
+            var tempResult = result
+            while (tempResult < 0) {
+                tempResult += 100
+                zeroHit += 1
+            }
+            if (tempResult == 0) {
+                ++zeroHit
+            }
+            return Pair(tempResult, current.second + zeroHit)
+        }
+
+        result > 99 ->  {
+            val zeroHit = (result / 100)
+            return Pair(result % 100, current.second + zeroHit)
+        }
+        else -> return Pair(result, current.second)
+    }
+
+}
+
+fun mapResultToDialRangePart2(result: Int): Pair<Int, Int> =
+    when {
+        result <  0 -> dialUp(result)
+        result > 99 -> dialDown(result)
+        else        -> Pair(result, 0)
+    }
+
+fun dialDown(result: Int): Pair<Int, Int> {
+    var zeroHit = 0
+    var tempResult = result
+
+//    println("\n\nResult: $result")
+    while(tempResult > 99) {
+        tempResult -= 100
+        ++zeroHit
+//        println("$tempResult \t $zeroHit")
+    }
+
+    return if (tempResult == 0) Pair(tempResult, zeroHit) else Pair(tempResult, zeroHit)
+}
+
+fun dialUp(result: Int): Pair<Int, Int> {
+    var zeroHit = 0
+    var tempResult = result
+
+//    println("\n\nResult: $result")
+    while (tempResult < 0) {
+        tempResult += 100
+        ++zeroHit
+//        println("$tempResult \t $zeroHit")
+    }
+
+    return if (tempResult == 0) Pair(tempResult, zeroHit) else Pair(tempResult, zeroHit)
+}
+
+fun solveCheese(inputFile: String): String {
+    val file = File(inputFile)
+
+    val startPoint = Pair(50, 0)
+    return file.readText()
+        .trim()
+        .split('\n')
+        .fold(startPoint) { position, instruction -> calculateTurnCheese(position, instruction) }
+        .toString()
+}
+
+fun calculateTurnCheese(current: Pair<Int, Int>, instruction: String): Pair<Int, Int> {
+    var dialPosition = current.first
+    var zeroCounter = current.second
+    if (instruction.startsWith('L')) {
+        var number = instruction.substring(1).toInt()
+        while (number > 0) {
+            dialPosition -= 1
+            --number
+            if (dialPosition == 0) {
+                ++zeroCounter
+            }
+            if (dialPosition == -1) {
+                dialPosition = 99
+            }
+        }
+        return Pair(dialPosition, zeroCounter)
+    } else {
+        var number = instruction.substring(1).toInt()
+        while (number > 0) {
+            dialPosition += 1
+            --number
+            if (dialPosition == 100) {
+                ++zeroCounter
+                dialPosition = 0
+            }
+        }
+        return Pair(dialPosition, zeroCounter)
+    }
+}
+
+fun compare(inputFile: String): String {
+    val file = File(inputFile)
+
+    val startPoint = Pair(50, 0)
+    val correct = file.readText().trim().split('\n').fold(startPoint) { position, instruction -> compareSolutions(position, instruction) }.toString()
+    return correct
+}
+
+fun compareSolutions(current: Pair<Int, Int>, instruction: String): Pair<Int, Int> {
+    if (calculateTurnPart2(current, instruction) != calculateTurnCheese(current, instruction)) {
+        println("Current: ${current.first} \tInstruction: $instruction\tCorrect: ${calculateTurnCheese(current, instruction)} Wrong: ${calculateTurnPart2(current, instruction)}")
+    }
+
+    return calculateTurnCheese(current, instruction)
 }
 
 fun errorWithManual(args: Array<String>): String =

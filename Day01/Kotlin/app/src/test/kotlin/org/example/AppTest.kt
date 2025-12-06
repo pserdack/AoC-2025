@@ -3,13 +3,72 @@
  */
 package org.example
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions.assertNotNull
 
 class AppTest {
     @Test
-    fun appHasAGreeting() {
-        val classUnderTest = App()
-        assertNotNull(classUnderTest.greeting, "app should have a greeting")
+    fun startAtZero_Hit() {
+        assertEquals(Pair(0, 1), calculateTurnPart2(Pair(0, 0), "L100"))
+    }
+    @Test
+    fun startAtZero_Hit2() {
+        assertEquals(Pair(0, 2), calculateTurnPart2(Pair(0, 0), "L200"))
+    }
+    @Test
+    fun startAtZero_oneUnder() {
+        assertEquals(Pair(1, 0), calculateTurnPart2(Pair(0, 0), "L99"))
+    }
+    @Test
+    fun startAtZero_oneOver() {
+        assertEquals(Pair(99, 1), calculateTurnPart2(Pair(0, 0), "L101"))
+    }
+    @Test
+    fun startAt0_remove300() {
+        assertEquals(Pair(0, 3), calculateTurnPart2(Pair(0, 0), "L300"))
+    }
+
+    @Test
+    fun startAt5_remove105() {
+        assertEquals(Pair(0, 2), calculateTurnPart2(Pair(5, 0), "L105"))
+    }
+
+    @Test
+    fun startAt5_remove5() {
+        assertEquals(Pair(0, 1), calculateTurnPart2(Pair(5, 0), "L5"))
+    }
+
+
+    @Test
+    fun startAtOne_Hit() {
+        assertEquals(Pair(0, 1), calculateTurnPart2(Pair(1, 0), "L1"))
+    }
+    @Test
+    fun startAtOne_oneOver() {
+        assertEquals(Pair(99, 1), calculateTurnPart2(Pair(1, 0), "L2"))
+    }
+    @Test
+    fun startAtTwo_hit1() {
+        assertEquals(Pair(1, 0), calculateTurnPart2(Pair(2, 0), "L1"))
+    }
+    @Test
+    fun startAtOne_oneOver100() {
+        assertEquals(Pair(99, 2), calculateTurnPart2(Pair(1, 0), "L102"))
+    }
+    @Test
+    fun startAt99_add1() {
+        assertEquals(Pair(0, 1), calculateTurnPart2(Pair(99, 0), "R1"))
+    }
+    @Test
+    fun startAt99_add2() {
+        assertEquals(Pair(1, 1), calculateTurnPart2(Pair(99, 0), "R2"))
+    }
+    @Test
+    fun startAt99_add101() {
+        assertEquals(Pair(0, 2), calculateTurnPart2(Pair(99, 0), "R101"))
+    }
+    @Test
+    fun startAt50_add200() {
+        assertEquals(Pair(50, 2), calculateTurnPart2(Pair(50, 0), "R200"))
     }
 }
