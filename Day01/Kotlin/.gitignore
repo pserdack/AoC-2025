@@ -5,3 +5,6 @@
 build
 
 .kotlin
+
+# output
+app/out
