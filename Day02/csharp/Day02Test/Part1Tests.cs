@@ -59,5 +59,24 @@ class Part1Tests
 
         await Assert.That(result).IsFalse();
     }
+
+    [Test]
+    public async Task Part1GetInvalidIds_IterateRange_ReturnsInvalidIds()
+    {
+        Tuple<int,int> testRange = new Tuple<int,int>(11,33);
+        int expectedResult = 66;
+        Tuple<int,int> testRange2 = new Tuple<int,int>(998,1012);
+        int expectedResult2 = 1010;
+
+        Part1 part1 = new();
+        int result = part1.GetInvalidIdsSumInRange(testRange);
+        int result2 = part1.GetInvalidIdsSumInRange(testRange2);
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(result).IsEqualTo(expectedResult);
+            await Assert.That(result2).IsEqualTo(expectedResult2);
+        }
+    }
 }
 

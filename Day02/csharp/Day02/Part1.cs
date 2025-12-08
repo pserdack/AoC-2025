@@ -28,6 +28,13 @@ public class Part1
 
         return true;
     }
+
+    public int GetInvalidIdsSumInRange(Tuple<int, int> range)
+    {
+        return Enumerable.Range(range.Item1, range.Item2 - range.Item1 + 1)
+            .Where(it => !IdIsValid(it))
+            .Sum();
+    }
 }
 
 public static class IntExtension 
