@@ -3,19 +3,19 @@ namespace Day02;
 public class Part1
 {
 
-    public List<Tuple<int, int>> SplitStringToInts(string input)
+    public List<Tuple<long, long>> SplitStringToInts(string input)
     {
         return input
             .Split(',')
             .Select(it =>
             {
                 var stringRange = it.Split('-');
-                return new Tuple<int, int>(int.Parse(stringRange[0]), int.Parse(stringRange[1]));
+                return new Tuple<long, long>(long.Parse(stringRange[0]), long.Parse(stringRange[1]));
             })
             .ToList();
     }
 
-    public bool IdIsValid(int id){
+    public bool IdIsValid(long id){
         var length = id.ToString().Length;
         if (length % 2 != 1) 
         {
@@ -29,17 +29,34 @@ public class Part1
         return true;
     }
 
-    public int GetInvalidIdsSumInRange(Tuple<int, int> range)
+    public long GetInvalidIdsSumInRange(Tuple<long, long> range)
     {
-        return Enumerable.Range(range.Item1, range.Item2 - range.Item1 + 1)
-            .Where(it => !IdIsValid(it))
-            .Sum();
+        var sum = 0L;
+        for (var i = range.Item1; i <= range.Item2; ++i)
+        {
+            if (!IdIsValid(i))
+            {
+                sum += i;
+            }
+        }
+
+        return sum;
+    }
+
+    public long ProcessInput(string input){
+        var listOfRanges = SplitStringToInts(input);
+        long runningSum = 0;
+        foreach (var tuple in listOfRanges){
+            runningSum += GetInvalidIdsSumInRange(tuple);
+        }
+        return runningSum;
     }
 }
 
+
 public static class IntExtension 
 {
-    extension(int input)
+    extension(long input)
     {
         public string FirstHalf()
         {
@@ -51,6 +68,17 @@ public static class IntExtension
         {
             var inputString = input.ToString();
             return inputString.Substring(inputString.Length / 2);
+        }
+    }
+}
+
+public static class ExtensionLong
+{
+    public static IEnumerable<long> Range(this long start, long count)
+    {
+        for (long i = start; i < start + count; i++)
+        {
+            yield return i;
         }
     }
 }

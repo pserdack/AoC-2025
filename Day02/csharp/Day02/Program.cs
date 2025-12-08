@@ -1,13 +1,16 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using Day02;
 
 string fileName = "../test.txt";
 
 if (args.Length > 0 && args[0] == "paul")
 {
     fileName = "../testPaul.txt";
-} else if (args.Length > 0 && args[0] == "Day02/micha")
+} else if (args.Length > 0 && args[0] == "micha")
 {
-    fileName = "testMicha.txt";
+    fileName = "Day02/testMicha.txt";
 }
 
-Console.WriteLine(File.ReadAllText(fileName));
+Part1 part1 = new();
+var input = File.ReadAllText(fileName);
+
+Console.WriteLine(part1.ProcessInput(input));
