@@ -1,2 +1,7 @@
 ﻿*.txt
 .idea
+
+# dotnet
+
+obj
+bin
